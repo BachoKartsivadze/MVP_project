@@ -96,6 +96,12 @@ extension GithubUsersController: UITableViewDelegate, UITableViewDataSource {
 
 
 extension GithubUsersController: GithubUsersView {
+    func reloadList() {
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
     
 }
 

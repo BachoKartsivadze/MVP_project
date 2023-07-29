@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 protocol GithubUsersView: AnyObject {
-    
+    func reloadList()
 }
 
 protocol GithubUsersPresenter {
@@ -27,37 +27,68 @@ class GithubUsersPresenterImp1: GithubUsersPresenter {
     private weak var view: GithubUsersView?
     private var router: GithubUsersRouter
     
-    private var listDataSource: [SectionModel] = [
-        SectionModel (
+    private var users: [GithubUser] = [] {
+        didSet {
+            view?.reloadList()
+        }
+    }
+    
+    private var usersUseCase: GithubUsersUseCase
+    
+    private var listDataSource: [SectionModel] {
+        return [
+            favoritesSection,
+            usersSection
+        ]
+    }
+    
+    
+    private var favoritesSection: SectionModel {
+        return SectionModel (
             headerModel: TitleHeader.ViewModel (
                 logo: UIImage(named: "gitjub_logo4")!, title: "Favorites"
         ),
-            cellModels: [
-                GithubUserCellTableViewCell.ViewModel(avatar: UIImage(), username: "Jon Doe")
-            ]
-        ),
-        
-        SectionModel (
+            cellModels: []
+        )
+    }
+    
+    private var usersSection: SectionModel {
+        return SectionModel (
             headerModel: TitleHeader.ViewModel (
                 logo: UIImage (named: "gitjub_logo4")!, title: "Users"
             ),
-            cellModels: [
-                GithubUserCellTableViewCell.ViewModel(avatar: UIImage(), username: "Jon Doe")
-            ]
+            cellModels: users.map { user in
+                GithubUserCellTableViewCell.ViewModel (
+                    avatar: UIImage(),
+                    username: user.login
+                )
+            }
         )
-    ]
+    }
     
-    init(view: GithubUsersView, router: GithubUsersRouter) {
+    
+    init(view: GithubUsersView,
+         router: GithubUsersRouter,
+         usersUseCase: GithubUsersUseCase
+    ) {
         self.view = view
         self.router = router
+        self.usersUseCase = usersUseCase
     }
     
     func viewDidLoad() {
-        
+        usersUseCase.fetchUsers(since: .zero) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let users):
+                self.users = users
+            case.failure(let error):
+                print (error)
+            }
+        }
     }
-    
-    
 }
+
 
 extension GithubUsersPresenterImp1 {
     
