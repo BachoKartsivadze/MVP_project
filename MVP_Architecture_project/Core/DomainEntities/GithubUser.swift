@@ -5,7 +5,7 @@
 //  Created by bacho kartsivadze on 18.07.23.
 //
 
-import Foundation
+import UIKit
 
 class GithubUser {
     
@@ -13,10 +13,24 @@ class GithubUser {
     let id: Int
     let avatar_url: String
     
+    var avatar: UIImage?
+    
     init(login: String, id: Int, avatar_url: String) {
         self.login = login
         self.id = id
         self.avatar_url = avatar_url
+    }
+    
+    func fetchAvatar(completion: @escaping () -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            if let url = URL(string: self.avatar_url),
+               let data = try? Data (contentsOf: url),
+               let image = UIImage (data: data) {
+                
+                self.avatar = image
+                completion()
+            }
+        }
     }
 }
 

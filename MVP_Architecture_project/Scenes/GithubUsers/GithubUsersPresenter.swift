@@ -59,7 +59,7 @@ class GithubUsersPresenterImp1: GithubUsersPresenter {
             ),
             cellModels: users.map { user in
                 GithubUserCellTableViewCell.ViewModel (
-                    avatar: UIImage(),
+                    avatar: user.avatar,
                     username: user.login
                 )
             }
@@ -82,6 +82,11 @@ class GithubUsersPresenterImp1: GithubUsersPresenter {
             switch result {
             case .success(let users):
                 self.users = users
+                users.forEach { user in
+                    user.fetchAvatar {
+                        self.view?.reloadList()
+                    }
+                }
             case.failure(let error):
                 print (error)
             }

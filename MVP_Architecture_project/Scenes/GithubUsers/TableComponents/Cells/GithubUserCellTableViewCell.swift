@@ -13,6 +13,7 @@ class GithubUserCellTableViewCell: UITableViewCell {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         view.backgroundColor = .lightGray
+        view.clipsToBounds = true
         return view
     }()
 
@@ -89,7 +90,7 @@ extension GithubUserCellTableViewCell {
         var cellIdentifier: String {
             return "GithubUserCellTableViewCell"
         }
-        let avatar: UIImage
+        let avatar: UIImage?
         let username: String
     }
     
