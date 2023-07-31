@@ -14,6 +14,7 @@ class GithubUser {
     let avatar_url: String
     
     var avatar: UIImage?
+    var isFavorite: Bool = false
     
     init(login: String, id: Int, avatar_url: String) {
         self.login = login

@@ -34,6 +34,7 @@ class GithubUsersPresenterImp1: GithubUsersPresenter {
     }
     
     private var usersUseCase: GithubUsersUseCase
+    private let favoritesUseCase: FavoriteUsersUseCaseImpl
     
     private var listDataSource: [SectionModel] {
         return [
@@ -48,7 +49,12 @@ class GithubUsersPresenterImp1: GithubUsersPresenter {
             headerModel: TitleHeader.ViewModel (
                 logo: UIImage(named: "gitjub_logo4")!, title: "Favorites"
         ),
-            cellModels: []
+            cellModels: users.filter({ $0.isFavorite }).map{ user in
+                GithubUserCellTableViewCell.ViewModel (
+                    avatar: user.avatar,
+                    username: user.login
+                )
+            }
         )
     }
     
@@ -57,7 +63,7 @@ class GithubUsersPresenterImp1: GithubUsersPresenter {
             headerModel: TitleHeader.ViewModel (
                 logo: UIImage (named: "gitjub_logo4")!, title: "Users"
             ),
-            cellModels: users.map { user in
+            cellModels: users.filter({ !$0.isFavorite }).map{ user in
                 GithubUserCellTableViewCell.ViewModel (
                     avatar: user.avatar,
                     username: user.login
@@ -69,11 +75,13 @@ class GithubUsersPresenterImp1: GithubUsersPresenter {
     
     init(view: GithubUsersView,
          router: GithubUsersRouter,
-         usersUseCase: GithubUsersUseCase
+         usersUseCase: GithubUsersUseCase,
+         favoritesUseCase: FavoriteUsersUseCaseImpl
     ) {
         self.view = view
         self.router = router
         self.usersUseCase = usersUseCase
+        self.favoritesUseCase = favoritesUseCase
     }
     
     func viewDidLoad() {
@@ -87,6 +95,19 @@ class GithubUsersPresenterImp1: GithubUsersPresenter {
                         self.view?.reloadList()
                     }
                 }
+                
+                self.favoritesUseCase.fetchFavoriteUsers { result in
+                    switch result {
+                    case .success(let favoritesIds) :
+                        self.users.forEach { user in
+                            user.isFavorite = favoritesIds.contains(user.id)
+                        }
+                        case.failure:
+                            break
+                        }
+                        self.view?.reloadList()
+                    }
+                
             case.failure(let error):
                 print (error)
             }

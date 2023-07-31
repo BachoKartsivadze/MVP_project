@@ -19,10 +19,17 @@ class GithubUsersConfiguratorImp1: GithubUsersConfigurator {
         let usersGateway: GithubUsersGateway = ApiGithubUsersGateway()
         let usersUseCase: GithubUsersUseCase = GithubUsersUseCaseImp1(gateway: usersGateway)
         
+        let favoritesGateway = CacheFavoritesUsersGateway()
+        let toggleGateway = CacheToggleFavoriteUserGateway()
+        let favoritesUseCase = FavoriteUsersUseCaseImpl(
+        favoritesGateway: favoritesGateway, toggleFavoritesGateway: toggleGateway
+        )
+        
         let presenter: GithubUsersPresenter = GithubUsersPresenterImp1(
             view: controller,
             router: router,
-            usersUseCase: usersUseCase
+            usersUseCase: usersUseCase,
+            favoritesUseCase: favoritesUseCase
             )
         
         controller.presenter = presenter
