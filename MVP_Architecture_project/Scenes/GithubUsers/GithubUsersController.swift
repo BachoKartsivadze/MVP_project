@@ -91,7 +91,23 @@ extension GithubUsersController: UITableViewDelegate, UITableViewDataSource {
         return dequeued
     }
     
-    
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+//        var textForAction = "Favourite"
+//        if indexPath.section == 0 {
+//            textForAction = "Unfavourite"
+//        }
+//        let cell = tableView.cellForRow(at: indexPath) as! GithubUserCellTableViewCell
+        
+        
+        let textForAction = presenter.textForAction(at: indexPath)
+        let action = UIContextualAction(style: .normal, title: textForAction, handler: {[unowned self] _,_,_ in
+            presenter.tapFavoriteUnfavorite(at: indexPath)
+        })
+        
+        return UISwipeActionsConfiguration(actions: [action])
+    }
+
+
 }
 
 

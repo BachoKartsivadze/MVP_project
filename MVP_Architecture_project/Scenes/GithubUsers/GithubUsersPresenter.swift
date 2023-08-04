@@ -5,7 +5,6 @@
 //  Created by bacho kartsivadze on 20.07.23.
 //
 
-import Foundation
 import UIKit
 
 protocol GithubUsersView: AnyObject {
@@ -20,6 +19,8 @@ protocol GithubUsersPresenter {
     func rowIdentifier(at indexPath: IndexPath) -> String
     func configure (header: ConfigurableCell, in section: Int)
     func configure (row: ConfigurableCell, at indexPath: IndexPath)
+    func textForAction(at indexPath: IndexPath) -> String
+    func tapFavoriteUnfavorite(at indexPath: IndexPath)
 }
 
 class GithubUsersPresenterImp1: GithubUsersPresenter {
@@ -122,24 +123,34 @@ extension GithubUsersPresenterImp1 {
         return listDataSource.count
     }
     
-    func number0fRows (in section: Int) -> Int {
+    func number0fRows(in section: Int) -> Int {
         return listDataSource[section].cellModels.count
     }
     
     func headerIdentifier(of section: Int) -> String {
-        return listDataSource [section].headerModel.cellIdentifier
+        return listDataSource[section].headerModel.cellIdentifier
     }
     
     func rowIdentifier(at indexPath: IndexPath) -> String {
         return listDataSource[indexPath.section].cellModels[indexPath.row].cellIdentifier
     }
     
-    func configure (header: ConfigurableCell, in section: Int) {
-        header.configure(with: listDataSource [section].headerModel)
+    func configure(header: ConfigurableCell, in section: Int) {
+        header.configure(with: listDataSource[section].headerModel)
     }
     
     func configure (row: ConfigurableCell, at indexPath: IndexPath) {
         row.configure(with: listDataSource[indexPath.section].cellModels[indexPath.row])
+    }
+    
+    func textForAction(at indexPath: IndexPath) -> String {
+//        let text = listDataSource[indexPath.section].headerModel.ViewModel.title
+        return "favourite"
+    }
+
+    
+    func tapFavoriteUnfavorite(at indexPath: IndexPath){
+        
     }
     
 }
