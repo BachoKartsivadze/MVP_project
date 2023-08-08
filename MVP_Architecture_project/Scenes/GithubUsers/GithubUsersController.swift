@@ -22,7 +22,7 @@ class GithubUsersController: UIViewController {
     }()
     
     private init(with configurator: GithubUsersConfigurator) {
-        super.init (nibName: nil, bundle: nil)
+        super.init(nibName: nil, bundle: nil)
         configurator.configure(self)
     }
     
@@ -57,10 +57,10 @@ extension GithubUsersController {
     
     private func addConstraints() {
         NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint (equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint (equalTo: view.trailingAnchor),
-            tableView.topAnchor.constraint (equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint (equalTo: view.bottomAnchor)
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 }
@@ -92,12 +92,6 @@ extension GithubUsersController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//        var textForAction = "Favourite"
-//        if indexPath.section == 0 {
-//            textForAction = "Unfavourite"
-//        }
-//        let cell = tableView.cellForRow(at: indexPath) as! GithubUserCellTableViewCell
-        
         
         let textForAction = presenter.textForAction(at: indexPath)
         let action = UIContextualAction(style: .normal, title: textForAction, handler: {[unowned self] _,_,_ in
@@ -124,8 +118,8 @@ extension GithubUsersController: GithubUsersView {
 // MARK: Static Initializer
 extension GithubUsersController {
     static func instantiate() -> GithubUsersController {
-        let configurator = GithubUsersConfiguratorImp1()
-        let vc = GithubUsersController (with: configurator)
+        let configurator = GithubUsersConfiguratorImpl()
+        let vc = GithubUsersController(with: configurator)
         return vc
     }
 }

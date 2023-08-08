@@ -11,7 +11,7 @@ protocol GithubUsersConfigurator {
     func configure(_ controller: GithubUsersController)
 }
 
-class GithubUsersConfiguratorImp1: GithubUsersConfigurator {
+class GithubUsersConfiguratorImpl: GithubUsersConfigurator {
     
     func configure(_ controller: GithubUsersController) {
         let router: GithubUsersRouter = GithubUsersRouterImp1(controller)

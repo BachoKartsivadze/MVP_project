@@ -34,6 +34,9 @@ class GithubUsersPresenterImp1: GithubUsersPresenter {
         }
     }
     
+    private var favoriteUsers: [GithubUser] = []
+    private var unFavoriteUsers: [GithubUser] = []
+    
     private var usersUseCase: GithubUsersUseCase
     private let favoritesUseCase: FavoriteUsersUseCaseImpl
     
@@ -106,6 +109,7 @@ class GithubUsersPresenterImp1: GithubUsersPresenter {
                         case.failure:
                             break
                         }
+                    self.setFavouriteUnfavourites()
                         self.view?.reloadList()
                     }
                 
@@ -113,7 +117,19 @@ class GithubUsersPresenterImp1: GithubUsersPresenter {
                 print (error)
             }
         }
+        
     }
+    
+    func setFavouriteUnfavourites() {
+        users.forEach {user in
+            if user.isFavorite {
+                favoriteUsers.append(user)
+            } else {
+                unFavoriteUsers.append(user)
+            }
+        }
+    }
+    
 }
 
 
@@ -144,13 +160,49 @@ extension GithubUsersPresenterImp1 {
     }
     
     func textForAction(at indexPath: IndexPath) -> String {
-//        let text = listDataSource[indexPath.section].headerModel.ViewModel.title
-        return "favourite"
+        if indexPath.section == 0 {
+            return "Unfavourite"
+        } else {
+            return "Favourite"
+        }
     }
 
     
     func tapFavoriteUnfavorite(at indexPath: IndexPath){
         
+        if indexPath.section == 0 {
+            let user = favoriteUsers[indexPath.row]
+            
+            favoritesUseCase.makeUnfavoriteUser(id: user.id) {
+                
+            }
+            
+            user.isFavorite = false
+            unFavoriteUsers.append(favoriteUsers[indexPath.row])
+            unFavoriteUsers.sort(by: {$0.id < $1.id}) 
+            favoriteUsers.remove(at: indexPath.row)
+            
+        } else {
+            
+            let user = unFavoriteUsers[indexPath.row]
+            
+            favoritesUseCase.makeFavoriteUser(id: user.id) {
+                
+            }
+            
+            user.isFavorite = true
+            favoriteUsers.append(unFavoriteUsers[indexPath.row])
+            favoriteUsers.sort(by: {$0.id < $1.id})
+            unFavoriteUsers.remove(at: indexPath.row)
+        }
+        
+        view?.reloadList()
     }
     
+}
+
+
+enum Sections: Int {
+    case favorites = 0
+    case unfavorites = 1
 }
